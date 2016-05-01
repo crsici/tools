@@ -1,0 +1,8 @@
+****************************************------------- mp3'll be deleted --------------**************************************
+1. copy mp3 to mp3 folder
+2. copy database to base folder, rename it to target.db
+3. open cmd at base folder
+4. run 
+	java -jar mp3Converter-all-1.0-SNAPSHOT.jar
+
+****************************************------------- mp3'll be deleted --------------**************************************
