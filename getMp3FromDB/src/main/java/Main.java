@@ -15,6 +15,8 @@ import java.util.List;
  * Created by sic.org on 4/27/2016.
  */
 public class Main {
+    public static  String query = "select ItemID, ItemSound from lessonItem";
+
     public static void main(String args[]) throws Exception {
         Main main = new Main();
         if (args.length == 0) {
@@ -92,6 +94,29 @@ public class Main {
             conn.commit();
             if (count != 1) {
                 throw new Exception("Can't find item sound ID: " + Integer.parseInt(itemId));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+            System.exit(1);
+        } finally {
+            if (prepStmt != null)
+                prepStmt.close();
+
+        }
+
+    }
+
+    public void getData(Connection conn, File sound, File db, String itemId) throws ClassNotFoundException, SQLException {
+        Class.forName("org.sqlite.JDBC");
+        PreparedStatement prepStmt = null;
+        ResultSet rs = null;
+        System.out.printf("------------------- update lessonItem set ItemSound=%s where ItemID=%d \n", sound.getName(), Integer.parseInt(itemId));
+        try {
+            prepStmt = conn.prepareStatement(query);
+            rs = prepStmt.executeQuery();
+            while (rs.next()){
+                Blob blob = rs.getBlob("ItemSound");
             }
 
         } catch (Exception e) {
