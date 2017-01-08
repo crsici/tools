@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mp3Converter.iml" filepath="$PROJECT_DIR$/.idea/modules/mp3Converter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mp3Converter_main.iml" filepath="$PROJECT_DIR$/.idea/modules/mp3Converter_main.iml" group="mp3Converter" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mp3Converter_test.iml" filepath="$PROJECT_DIR$/.idea/modules/mp3Converter_test.iml" group="mp3Converter" />
+    </modules>
+  </component>
+</project>

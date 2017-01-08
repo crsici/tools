@@ -1,21 +1,15 @@
 import ml.options.Options;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.sql.*;
 
 /**
  * Created by sic.org on 4/27/2016.
  */
 public class Main {
-    public static  String query = "select ItemID, ItemSound from lessonItem";
+    public static String query = "select ItemID, ItemSound from lessonItem";
 
     public static void main(String args[]) throws Exception {
         Main main = new Main();
@@ -55,23 +49,7 @@ public class Main {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database.getAbsolutePath());
             conn.setAutoCommit(false);
 
-            List<File> sortedMp3 = Arrays.asList(mp3Resouce.listFiles());
-            Collections.sort(sortedMp3, (f1, f2) -> {
-                        String name1 = f1.getName();
-                        String name2 = f2.getName();
-
-                        return Integer.valueOf(
-                                name1.substring(0, name1.indexOf('.'))
-                        ).compareTo(
-                                Integer.valueOf(
-                                        name2.substring(0, name2.indexOf('.')
-                                        )                                )
-                        );
-                    }
-            );
-            for (File fileEntry : sortedMp3) {
-                overrideDB(conn, fileEntry, database, fileEntry.getName().substring(0, fileEntry.getName().indexOf('.')));
-            }
+            getData(conn, src);
         } catch (Exception e) {
             System.out.println(e);
         } finally {
@@ -82,41 +60,20 @@ public class Main {
 
     }
 
-    public void overrideDB(Connection conn, File sound, File db, String itemId) throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-        PreparedStatement prepStmt = null;
-        System.out.printf("------------------- update lessonItem set ItemSound=%s where ItemID=%d \n", sound.getName(), Integer.parseInt(itemId));
-        try {
-            prepStmt = conn.prepareStatement("update lessonItem set ItemSound=? where ItemID=?");
-            prepStmt.setInt(2, Integer.parseInt(itemId));
-            prepStmt.setBytes(1, getByteArrayFromFile(sound));
-            int count = prepStmt.executeUpdate();
-            conn.commit();
-            if (count != 1) {
-                throw new Exception("Can't find item sound ID: " + Integer.parseInt(itemId));
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-            System.exit(1);
-        } finally {
-            if (prepStmt != null)
-                prepStmt.close();
-
-        }
-
-    }
-
-    public void getData(Connection conn, File sound, File db, String itemId) throws ClassNotFoundException, SQLException {
+    public void getData(Connection conn, String src) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         PreparedStatement prepStmt = null;
         ResultSet rs = null;
-        System.out.printf("------------------- update lessonItem set ItemSound=%s where ItemID=%d \n", sound.getName(), Integer.parseInt(itemId));
+
         try {
             prepStmt = conn.prepareStatement(query);
             rs = prepStmt.executeQuery();
-            while (rs.next()){
-                Blob blob = rs.getBlob("ItemSound");
+            while (rs.next()) {
+                Integer id = rs.getInt("ItemID");
+                byte[] blob = rs.getBytes("ItemSound");
+                System.out.printf("------------------- id =%s", id);
+                File file = new File(Paths.get(src).toAbsolutePath().toString() + File.separator + id + ".3gp");
+                witeFile(blob, id.toString(), file);
             }
 
         } catch (Exception e) {
@@ -130,30 +87,15 @@ public class Main {
 
     }
 
-    private byte[] getByteArrayFromFile(File imgFile) {
-        byte[] result = null;
-        FileInputStream fileInStr = null;
-        try {
-            fileInStr = new FileInputStream(imgFile);
-            long imageSize = imgFile.length();
+    private void witeFile(byte[] fileStream, String id, File src) {
 
-            if (imageSize > Integer.MAX_VALUE) {
-                return null;    //image is too large
-            }
-
-            if (imageSize > 0) {
-                result = new byte[(int) imageSize];
-                fileInStr.read(result);
-            }
+        try (FileOutputStream fileOutputStream = new FileOutputStream(src)) {
+            fileOutputStream.write(fileStream);
+            fileOutputStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fileInStr.close();
-                imgFile.delete();
-            } catch (Exception e) {
-            }
+            System.out.println(e);
         }
-        return result;
+
+
     }
 }

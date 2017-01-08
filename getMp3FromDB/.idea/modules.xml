@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/getMp3FromDB.iml" filepath="$PROJECT_DIR$/.idea/modules/getMp3FromDB.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/getMp3FromDB_main.iml" filepath="$PROJECT_DIR$/.idea/modules/getMp3FromDB_main.iml" group="getMp3FromDB" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/getMp3FromDB_test.iml" filepath="$PROJECT_DIR$/.idea/modules/getMp3FromDB_test.iml" group="getMp3FromDB" />
+    </modules>
+  </component>
+</project>
